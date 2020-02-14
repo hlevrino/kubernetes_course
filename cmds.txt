@@ -1,0 +1,47 @@
+minikube start
+minikube stop
+minikube ssh
+minikube ip //ip externa del cluster k8s
+
+// instala curl en el pod
+apk add -U curl
+
+kubectl run --generator=run-pod/v1 podtest2 --image=nginx:alpine
+// crea pod temporal y ejecuta sh (shell)
+kubectl run --rm -ti --generator=run-pod/v1 podtest3 --image=nginx:alpine -- sh
+kubectl label pods podtest2 app=front
+
+kubectl get pods
+kubectl get pods --show-labels
+
+kubectl get deployment
+kubectl get deployment --show-labels
+kubectl get rs --show-labels
+kubectl get rs -l app=front
+
+kubectl api-resources
+kubectl api-versions
+
+kubectl apply -f file.yaml
+kubectl apply -f file.yaml --record
+kubectl delete -f file.yaml
+kubectl delete pod deployment-test-86677fd487-cshnv
+
+kubectl rollout status deployment deployment-test
+kubectl rollout history deployment deployment-test
+kubectl rollout history deployment deployment-test --revision=3
+
+kubectl describe deployment deployment-test
+kubectl describe pod deployment-test-858557b658-7tm6b
+kubectl describe svc my-service
+kubectl get deployment deployment-test -o yaml
+kubectl get rs deployment-test-86677fd487 -o yaml
+kubectl get pod deployment-test-86677fd487-hlmg4 -o yaml
+kubectl get pods -l app=front -o wide
+kubectl get svc -l app=front
+kubectl get endpoints
+
+kubectl annotate deployment.v1.apps/nginx-deployment kubernetes.io/change-cause="image updated to 1.9.1"
+
+kubectl rollout undo deployment deployment-test --to-revision=3
+
