@@ -11,8 +11,11 @@ kubectl run --generator=run-pod/v1 podtest2 --image=nginx:alpine
 kubectl run --rm -ti --generator=run-pod/v1 podtest3 --image=nginx:alpine -- sh
 kubectl label pods podtest2 app=front
 
+kubectl get all --namespace kube-system
+
 kubectl get pods
 kubectl get pods --show-labels
+kubectl get pods --namespace docker
 
 kubectl get deployment
 kubectl get deployment --show-labels
@@ -34,6 +37,7 @@ kubectl rollout history deployment deployment-test --revision=3
 kubectl describe deployment deployment-test
 kubectl describe pod deployment-test-858557b658-7tm6b
 kubectl describe svc my-service
+kubectl logs backend-k8s-hands-on-7dfffb9c74-wjdxd
 kubectl get deployment deployment-test -o yaml
 kubectl get rs deployment-test-86677fd487 -o yaml
 kubectl get pod deployment-test-86677fd487-hlmg4 -o yaml
@@ -45,3 +49,40 @@ kubectl annotate deployment.v1.apps/nginx-deployment kubernetes.io/change-cause=
 
 kubectl rollout undo deployment deployment-test --to-revision=3
 
+// Namespaces
+kubectl create namespace test-ns
+kubectl get namespaces --show-labels
+kubectl describe namespaces test-ns
+// crea un objeto dentro de un namespace
+kubectl run --generator=run-pod/v1 podtest3 --image=nginx:alpine --namespace test-ns
+
+// DNS svcName + nsName + svc.cluster.local
+curl backend-k8s-hands-on.ci.svc.cluster.local
+
+// Context
+kubectl config current-context
+kubectl config view
+// crear un contexto
+kubectl config set-context ci-context --namespace=ci --cluster=docker-desktop --user=docker-desktop
+// switch context
+kubectl config use-context ci-context
+
+// Docker
+// crea un contenedor con golang
+// -v expone carpeta del file system al contenedor
+// no me anduvo el --net host en entorno windows: docker run --rm -dti -v $PWD/:/go --net host --name golang golang bash
+docker run --rm -dti -v $PWD/:/go -p 9090:9090 --name golang golang bash
+
+docker run -d -p 9091:9090 --name k8s-hands-on k8s-hands-on
+
+// lista contenedores
+docker ps -l
+// elimina un contenedor
+docker rm -fv fdd2cc9dc253551963210ebbc2045f662a934915f0813fd727f18cc5246385ce
+// ingresar al contenedor
+docker exec -ti d736cf46ffadfa91c3e7c824ec235310e2f57c4805eff49d6684925e600d5687 bash  
+// Construir la imagen docker 
+docker build -t k8s-hands-on -f .\Dockerfile .
+
+
+//image pull policy kubernetes
