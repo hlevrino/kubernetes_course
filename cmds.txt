@@ -45,6 +45,8 @@ kubectl get pod deployment-test-86677fd487-hlmg4 -o yaml
 kubectl get pods -l app=front -o wide
 kubectl get svc -l app=front
 kubectl get endpoints
+// ejecutar una terminal del pod
+kubectl exec -ti nombre-pod -- sh
 
 kubectl annotate deployment.v1.apps/nginx-deployment kubernetes.io/change-cause="image updated to 1.9.1"
 
@@ -70,6 +72,25 @@ kubectl config use-context ci-context
 
 // Ver recursos alocados por un nodo
 kubectl describe node docker-desktop 
+
+// Crear un configmap
+kubectl create configmap nginx-config --from-file=.\configmaps-examples\nginx.conf
+// Get configmaps, describe
+kubectl get configmaps
+kubectl get cm
+kubectl describe configmaps nginx-config
+// Crear configmap de varios archivos
+kubectl create configmap nginx-config1 --from-file=.\configmaps-examples\
+
+// Crear secret
+kubectl create secret generic mysecret --from-file=./secrets-files/test.txt
+// get, describe
+kubectl get secrets
+kubectl describe secrets mysecret   //no muestra el contenido de los secretos.
+kubectl delete secrets mysecret
+// info parcial del contenido de los secretos (devuelve en base64)
+kubectl get secrets mysecret -o yaml 
+
 
 // Docker
 // crea un contenedor con golang
