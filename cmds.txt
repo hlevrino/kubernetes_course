@@ -91,6 +91,18 @@ kubectl delete secrets mysecret
 // info parcial del contenido de los secretos (devuelve en base64)
 kubectl get secrets mysecret -o yaml 
 
+// Volúmenes: sirven para persistir datos desde un pod
+// EmptyDir: vol a nivel de pod, compartido y persistido para todos los contenedores del mismo.
+//           existe mientras exista el pod, si muere el pod, tambien se pierden los datos de ese vol.
+//           se mantiene si se reinicia el container.
+// hostPath: un path dentro del nodo donde está corriendo el pod.
+//           no depende de la vida del pod, el problema es que si un pod se inicia en otro nodo, no puede
+//           acceder a los mismos datos. Está vinculado directamente al host donde corre el nodo.
+// cloud:    un path que referencia a un almacenamiento en la nube.
+//           por ejemplo EBS (amazon) o PD (google cloud)
+//           lo complejo es q al referenciar el almacenamiento se debe conocer metadata de cada uno,
+//           según su tipo y proveedor (ver PVC y PV).
+
 
 // Docker
 // crea un contenedor con golang
@@ -108,6 +120,7 @@ docker rm -fv fdd2cc9dc253551963210ebbc2045f662a934915f0813fd727f18cc5246385ce
 docker exec -ti d736cf46ffadfa91c3e7c824ec235310e2f57c4805eff49d6684925e600d5687 bash  
 // Construir la imagen docker 
 docker build -t k8s-hands-on -f .\Dockerfile .
-
+// lista las imágenes disponibles
+docker images
 
 //image pull policy kubernetes
