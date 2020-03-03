@@ -1,0 +1,67 @@
+# Clases de reclaimPolicy
+# Define que se hace con el pv que estaba asociado a un pvc cuando este se borra.
+# Por defecto, usando aprovisionamiento estático es: Retain
+#              usando un storage class, es: Delete
+# Retain: cuando se elimina el claim (pvc), se deja el pv con los datos pero no puede ser usado por otro claim.
+# Recycle: vuelve el pv disponible cuando el pvc se elimine. Elimina todo el contenido del pv, y lo deja 
+#          disponible para otro pvc.
+# Delete: borra el pv con todo su contenido una vez que el pvc se elimine.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: test-pv
+  labels:
+    mysql: ready
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mysql"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  selector: 
+    matchLabels: 
+      mysql: ready
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      volumes:
+        - name: vol-mysql
+          persistentVolumeClaim:
+            claimName: test-pv-claim  # apunta al pvc definido mas arriba.
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: "12345678"
+        volumeMounts:
+          - mountPath: "/var/lib/mysql"  # ruta donde mysql guarda los datos.
+            name: vol-mysql

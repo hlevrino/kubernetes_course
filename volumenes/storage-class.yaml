@@ -1,0 +1,14 @@
+
+## aprovisionamiento dinámico, el pv se crea dinámicamente, sin necesidad de definirlo estáticamente.
+## se crea el claim, y este según el aprovisionador devuelto por kubectl get storageclasses, crea el pv.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sc-pvc
+spec:
+  #storageClassName: hostpath  # valor devuelto por "kubectl get storageclasses", si se omite la línea se asigna el default
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

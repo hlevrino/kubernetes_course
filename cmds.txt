@@ -103,6 +103,14 @@ kubectl get secrets mysecret -o yaml
 //           lo complejo es q al referenciar el almacenamiento se debe conocer metadata de cada uno,
 //           según su tipo y proveedor (ver PVC y PV).
 
+// Clases de storages que disponibles.
+kubectl get storageclasses
+
+// get Persistent volume (pv) y Persistent volume claim (pvc)
+kubectl get pv
+kubectl get pvc
+// Modifica un PersistentVolume (pv)
+kubectl edit pv nombre-pv
 
 // Docker
 // crea un contenedor con golang
